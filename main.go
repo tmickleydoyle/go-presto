@@ -2,13 +2,16 @@ package main
 
 import (
 	"fmt"
-	"github.com/tmickleydoyle/go-presto"
-  )
-  
-  // Host, user, source, catalog, schema, query
-  sql := "SELECT * FROM sys.node"
-  query, _ := presto.NewQuery("http://presto-coordinator:8080", "", "", "", "", sql)
-  
-  if row, _ := query.Next(); row != nil {
-	fmt.Println(row...)
-  }
+	"database/sql"
+
+	_ "github.com/prestodb/presto-go-client/presto"
+)
+
+func main() {
+	dsn := "http://user@localhost:8080?catalog=default&schema=test"
+	db, err := sql.Open("presto", dsn)
+
+	db.Query("SELECT * FROM foobar WHERE id=?", 1, sql.Named("X-Presto-User", string("Alice")))
+
+	fmt.Println(db, err)
+}
