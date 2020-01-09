@@ -23,7 +23,7 @@ func main() {
 	ctx, _ := context.WithTimeout(context.Background(), 20*time.Minute)
 
 	if err == nil {
-		rows, err := db.QueryContext(ctx, "SELECT * FROM hive.core_tables.users LIMIT 10")
+		rows, err := db.QueryContext(ctx, "SELECT * FROM tables LIMIT 10")
 		if err != nil {
 			log.Fatal(err)
 		}
