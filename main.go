@@ -1,17 +1,35 @@
 package main
 
 import (
-	"fmt"
+	"context"
 	"database/sql"
+	"fmt"
+	"log"
+	"os"
+	"time"
 
 	_ "github.com/prestodb/presto-go-client/presto"
 )
 
-func main() {
-	dsn := "http://user@localhost:8080?catalog=default&schema=test"
+var (
+	userName = os.Getenv("PRESTO_USERNAME")
+	prestoHost = os.Getenv("PRESTO_HOST")
+	prestoPort = os.Getenv("PRESTO_PORT")
+)
+
+func main() {	
+	dsn := "http://" + userName + "@" + prestoHost + ":" + prestoPort
 	db, err := sql.Open("presto", dsn)
+	ctx, _ := context.WithTimeout(context.Background(), 20*time.Minute)
 
-	db.Query("SELECT * FROM foobar WHERE id=?", 1, sql.Named("X-Presto-User", string("Alice")))
-
-	fmt.Println(db, err)
+	if err == nil {
+		rows, err := db.QueryContext(ctx, "SELECT * FROM hive.core_tables.users LIMIT 10")
+		if err != nil {
+			log.Fatal(err)
+		}
+	
+		for rows.Next() {
+			fmt.Println(rows)
+		}
+	}
 }
