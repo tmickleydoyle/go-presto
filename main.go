@@ -5,11 +5,14 @@ import (
 	"context"
 	"database/sql"
 	"encoding/json"
+	"fmt"
 	"log"
 	"os"
 	"reflect"
+	"strings"
 	"time"
 
+	"github.com/go-gota/gota/dataframe"
 	_ "github.com/prestodb/presto-go-client/presto"
 )
 
@@ -20,11 +23,19 @@ var (
 
 	cancelTime = 20 * time.Minute
 
-	file = "query.sql"
+	outFileName = "output.csv"
 )
 
 func main() {
-	filerc, err := os.Open(file)
+	if len(os.Args) < 2 {
+		fmt.Println("set a sql file path.")
+		fmt.Println("./go-presto <path/to/file>")
+		return
+	}
+
+	filename := os.Args[1]
+
+	filerc, err := os.Open(filename)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -41,8 +52,17 @@ func main() {
 	if err != nil {
 		log.Fatalln(err)
 	}
-	os.Stdout.Write(b)
+	// os.Stdout.Write(b)
+	jString := string(b)
 
+	df := dataframe.ReadJSON(strings.NewReader(jString))
+
+	wf, err := os.Create(outFileName)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	df.WriteCSV(wf)
 }
 
 func queryToJson(db *sql.DB, query string) ([]byte, error) {
