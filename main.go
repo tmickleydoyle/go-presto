@@ -57,6 +57,8 @@ func main() {
 
 	df := dataframe.ReadJSON(strings.NewReader(jString))
 
+	fmt.Println(df)
+
 	wf, err := os.Create(outFileName)
 	if err != nil {
 		log.Fatal(err)
