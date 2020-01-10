@@ -29,7 +29,7 @@ var (
 func main() {
 	if len(os.Args) < 2 {
 		fmt.Println("set a sql file path.")
-		fmt.Println("./go-presto <path/to/file>")
+		fmt.Println("Example: go-presto /Desktop/file.sql")
 		return
 	}
 
