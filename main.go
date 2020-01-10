@@ -22,18 +22,17 @@ var (
 	prestoPort = os.Getenv("PRESTO_PORT")
 
 	cancelTime = 20 * time.Minute
-
-	outFileName = "output.csv"
 )
 
 func main() {
-	if len(os.Args) < 2 {
-		fmt.Println("set a sql file path.")
-		fmt.Println("Example: go-presto /Desktop/file.sql")
+	if len(os.Args) < 3 {
+		fmt.Println("set a sql read and write path.")
+		fmt.Println("Example: go-presto /Desktop/query.sql /Desktop/output.csv")
 		return
 	}
 
 	filename := os.Args[1]
+	outFilename := os.Args[2]
 
 	filerc, err := os.Open(filename)
 	if err != nil {
@@ -59,7 +58,7 @@ func main() {
 
 	fmt.Println(df)
 
-	wf, err := os.Create(outFileName)
+	wf, err := os.Create(outFilename)
 	if err != nil {
 		log.Fatal(err)
 	}
