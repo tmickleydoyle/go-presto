@@ -10,7 +10,7 @@ go get github.com/tmickleydoyle/go-presto
 go-presto path/to/sql/file.sql path/to/save/file.csv
 ```
 
-_Go can be installed with [Homebrew](https://formulae.brew.sh/formula/go)._
+Go can be installed with [Homebrew](https://formulae.brew.sh/formula/go).
 
 Install Go:
 
