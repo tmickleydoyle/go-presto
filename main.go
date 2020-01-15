@@ -21,7 +21,7 @@ var (
 	prestoHost = os.Getenv("PRESTO_HOST")
 	prestoPort = os.Getenv("PRESTO_PORT")
 
-	cancelTime = 20 * time.Minute
+	cancelTime = 1440 * time.Minute
 )
 
 func main() {
