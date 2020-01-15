@@ -5,14 +5,14 @@ import (
 	"context"
 	"database/sql"
 	"encoding/json"
-	"fmt"
+	"flag"
+	"io/ioutil"
 	"log"
 	"os"
 	"reflect"
-	"strings"
 	"time"
 
-	"github.com/go-gota/gota/dataframe"
+	"github.com/joho/sqltocsv"
 	_ "github.com/prestodb/presto-go-client/presto"
 )
 
@@ -25,14 +25,15 @@ var (
 )
 
 func main() {
-	if len(os.Args) < 3 {
-		fmt.Println("set a sql read and write path.")
-		fmt.Println("Example: go-presto /Desktop/query.sql /Desktop/output.csv")
-		return
-	}
+	var jsonOutput bool
+	var filename string
+	var outFilename string
 
-	filename := os.Args[1]
-	outFilename := os.Args[2]
+	flag.BoolVar(&jsonOutput, "jsonOutput", false, "indicate if the output should be json")
+	flag.StringVar(&filename, "filename", "", "input SQL file name")
+	flag.StringVar(&outFilename, "outFilename", "", "output file name")
+
+	flag.Parse()
 
 	filerc, err := os.Open(filename)
 	if err != nil {
@@ -47,37 +48,28 @@ func main() {
 	dsn := "http://" + userName + "@" + prestoHost + ":" + prestoPort
 	db, err := sql.Open("presto", dsn)
 
-	b, err := queryToJson(db, f)
-	if err != nil {
-		log.Fatalln(err)
+	ctx, cancel := context.WithTimeout(context.Background(), cancelTime)
+	defer cancel()
+
+	rows, err := db.QueryContext(ctx, f)
+
+	if jsonOutput == true {
+		b, err := queryToJson(rows)
+		if err != nil {
+			log.Fatalln(err)
+		}
+
+		jData := string(b)
+		file, _ := json.MarshalIndent(jData, "", " ")
+		_ = ioutil.WriteFile(outFilename, file, 0644)
+	} else {
+		csvConverter := sqltocsv.New(rows)
+		csvConverter.WriteFile(outFilename)
 	}
-	// os.Stdout.Write(b)
-	jString := string(b)
-
-	df := dataframe.ReadJSON(strings.NewReader(jString))
-
-	fmt.Println(df)
-
-	wf, err := os.Create(outFilename)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	df.WriteCSV(wf)
 }
 
-func queryToJson(db *sql.DB, query string) ([]byte, error) {
-	// an array of JSON objects
-	// the map key is the field name
+func queryToJson(rows *sql.Rows) ([]byte, error) {
 	var objects []map[string]interface{}
-
-	ctx, cancel := context.WithTimeout(context.Background(), cancelTime)
-
-	rows, err := db.QueryContext(ctx, query)
-	if err != nil {
-		return nil, err
-	}
-	defer cancel()
 
 	for rows.Next() {
 		// figure out what columns were returned
