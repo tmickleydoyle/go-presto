@@ -7,7 +7,12 @@ Getting Started Example:
 
 ```bash
 go get github.com/tmickleydoyle/go-presto
-go-presto path/to/sql/file.sql path/to/save/file.csv
+
+go-presto -filename ~/Desktop/query_one.sql -outFilename ~/Desktop/query_one.json -jsonOutput true
+
+go-presto -filename ~/Desktop/query_one.sql -outFilename ~/Desktop/query_one.csv -jsonOutput false
+
+go-presto -filename ~/Desktop/query_one.sql -outFilename ~/Desktop/query_one.csv
 ```
 
 Go can be installed with [Homebrew](https://formulae.brew.sh/formula/go).
