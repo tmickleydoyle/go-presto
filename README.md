@@ -15,6 +15,20 @@ go-presto -filename ~/Desktop/query_one.sql -outFilename ~/Desktop/query_one.csv
 go-presto -filename ~/Desktop/query_one.sql -outFilename ~/Desktop/query_one.csv
 ```
 
+Help:
+
+```bash
+go-presto --help
+
+Usage of go-presto:
+  -filename string
+        input SQL file name
+  -jsonOutput
+        indicate if the output should be json
+  -outFilename string
+        output file name
+```
+
 Go can be installed with [Homebrew](https://formulae.brew.sh/formula/go).
 
 Install Go:
