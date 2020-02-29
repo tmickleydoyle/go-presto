@@ -5,7 +5,9 @@ import (
 	"context"
 	"database/sql"
 	"encoding/json"
+	"errors"
 	"flag"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
@@ -22,18 +24,32 @@ var (
 	prestoPort = os.Getenv("PRESTO_PORT")
 
 	cancelTime = 1440 * time.Minute
+
+	jsonBool bool
+	in   string
+	out  string
+)
+
+const (
+	exitFail = 1
 )
 
 func main() {
-	var jsonOutput bool
-	var filename string
-	var outFilename string
-
-	flag.BoolVar(&jsonOutput, "jsonOutput", false, "indicate if the output should be json")
-	flag.StringVar(&filename, "filename", "", "input SQL file name")
-	flag.StringVar(&outFilename, "outFilename", "", "output file name")
-
+	flag.BoolVar(&jsonBool, "json", false, "indicate if the output should be json")
+	flag.StringVar(&in, "in", "", "input SQL file")
+	flag.StringVar(&out, "out", "", "output file")
 	flag.Parse()
+
+	if err := run(jsonBool, in, out); err != nil {
+		fmt.Fprintf(os.Stderr, "%s\n", err)
+		os.Exit(exitFail)
+	}
+}
+
+func run(jsonOutput bool, filename string, outFilename string) error {
+	if filename == "" {
+		return errors.New("no input SQL file")
+	}
 
 	filerc, err := os.Open(filename)
 	if err != nil {
@@ -48,24 +64,38 @@ func main() {
 	dsn := "http://" + userName + "@" + prestoHost + ":" + prestoPort
 	db, err := sql.Open("presto", dsn)
 
+	if err != nil {
+		return errors.New("no database connection")
+	}
+
 	ctx, cancel := context.WithTimeout(context.Background(), cancelTime)
 	defer cancel()
 
 	rows, err := db.QueryContext(ctx, f)
 
-	if jsonOutput == true {
-		b, err := queryToJson(rows)
-		if err != nil {
-			log.Fatalln(err)
-		}
+	db.Close()
 
-		jData := string(b)
-		file, _ := json.MarshalIndent(jData, "", " ")
-		_ = ioutil.WriteFile(outFilename, file, 0644)
-	} else {
-		csvConverter := sqltocsv.New(rows)
-		csvConverter.WriteFile(outFilename)
+	if err != nil {
+		return errors.New("error running query")
 	}
+
+	if outFilename != "" {
+		if jsonOutput == true {
+			b, err := queryToJson(rows)
+			if err != nil {
+				log.Fatalln(err)
+			}
+
+			jData := string(b)
+			file, _ := json.MarshalIndent(jData, "", " ")
+			_ = ioutil.WriteFile(outFilename, file, 0644)
+		} else {
+			csvConverter := sqltocsv.New(rows)
+			csvConverter.WriteFile(outFilename)
+		}
+	}
+
+	return nil
 }
 
 func queryToJson(rows *sql.Rows) ([]byte, error) {
