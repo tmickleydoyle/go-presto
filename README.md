@@ -14,7 +14,7 @@ go-presto -in query_one.sql -out query_one.csv -json false
 
 go-presto -in query_one.sql -out query_one.csv
 
-go-presto -in ~/Desktop/query_one.sql
+go-presto -in query_one.sql
 ```
 
 Help:
