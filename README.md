@@ -8,11 +8,13 @@ Getting Started Example:
 ```bash
 go get github.com/tmickleydoyle/go-presto
 
-go-presto -filename ~/Desktop/query_one.sql -outFilename ~/Desktop/query_one.json -jsonOutput true
+go-presto -in query_one.sql -out query_one.json -json true
 
-go-presto -filename ~/Desktop/query_one.sql -outFilename ~/Desktop/query_one.csv -jsonOutput false
+go-presto -in query_one.sql -out query_one.csv -json false
 
-go-presto -filename ~/Desktop/query_one.sql -outFilename ~/Desktop/query_one.csv
+go-presto -in query_one.sql -out query_one.csv
+
+go-presto -in ~/Desktop/query_one.sql
 ```
 
 Help:
@@ -21,11 +23,11 @@ Help:
 go-presto --help
 
 Usage of go-presto:
-  -filename string
+  -in string
         input SQL file name
-  -jsonOutput
+  -json
         indicate if the output should be json
-  -outFilename string
+  -out string
         output file name
 ```
 
