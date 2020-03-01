@@ -17,6 +17,12 @@ go-presto -in query_one.sql -out query_one.csv
 go-presto -in query_one.sql
 ```
 
+Install with brew:
+
+```bash
+brew install tmickleydoyle/go-presto/main
+```
+
 Help:
 
 ```bash
