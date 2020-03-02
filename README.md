@@ -17,6 +17,14 @@ go-presto -in query_one.sql -out query_one.csv
 go-presto -in query_one.sql
 ```
 
+Database connection objects should be included in the ~/.bash_profile:
+
+```bash
+export PRESTO_USERNAME='username'
+export PRESTO_HOST='presto.coordinator.net'
+export PRESTO_PORT=8080
+```
+
 Install with brew:
 
 ```bash
