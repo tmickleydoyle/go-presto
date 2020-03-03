@@ -30,12 +30,6 @@ export PRESTO_HOST='presto.coordinator.net'
 export PRESTO_PORT=8080
 ```
 
-Install with brew:
-
-```bash
-brew install tmickleydoyle/go-presto/main
-```
-
 Help:
 
 ```bash
