@@ -15,6 +15,11 @@ go-presto -in query_one.sql -out query_one.csv -json false
 go-presto -in query_one.sql -out query_one.csv
 
 go-presto -in query_one.sql
+
+go-presto -in "SELECT * FROM table" -out query_one.csv
+
+# Renders markdown table
+go-presto -in "SELECT * FROM table"
 ```
 
 Database connection objects should be included in the ~/.bash_profile:
