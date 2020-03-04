@@ -30,6 +30,12 @@ export PRESTO_HOST='presto.coordinator.net'
 export PRESTO_PORT=8080
 ```
 
+Brew install:
+
+```bash
+brew uninstall tmickleydoyle/go-presto/main
+```
+
 Help:
 
 ```bash
