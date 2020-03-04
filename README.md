@@ -30,12 +30,6 @@ export PRESTO_HOST='presto.coordinator.net'
 export PRESTO_PORT=8080
 ```
 
-Brew install:
-
-```bash
-brew uninstall tmickleydoyle/go-presto/main
-```
-
 Help:
 
 ```bash
@@ -51,6 +45,12 @@ Usage of go-presto:
 ```
 
 Go can be installed with [Homebrew](https://formulae.brew.sh/formula/go).
+
+Install go-presto:
+
+```bash
+brew uninstall tmickleydoyle/go-presto/main
+```
 
 Install Go:
 
