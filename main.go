@@ -155,7 +155,6 @@ func run(jsonOutput bool, filename string, outFilename string) error {
 					
 				}
 				t.AppendRow(row)
-				fmt.Println(row)
 			}
 			t.Render()
 		}
