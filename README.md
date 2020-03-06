@@ -46,12 +46,6 @@ Usage of go-presto:
 
 Go can be installed with [Homebrew](https://formulae.brew.sh/formula/go).
 
-Install go-presto:
-
-```bash
-brew uninstall tmickleydoyle/go-presto/main
-```
-
 Install Go:
 
 ```bash
