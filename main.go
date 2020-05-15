@@ -26,8 +26,8 @@ var (
 	cancelTime = 1440 * time.Minute
 
 	jsonBool bool
-	in   string
-	out  string
+	in       string
+	out      string
 )
 
 const (
@@ -47,19 +47,24 @@ func main() {
 }
 
 func run(jsonOutput bool, filename string, outFilename string) error {
-	if filename == "" {
-		return errors.New("no input SQL file")
-	}
+	// if filename == "" {
+	// 	return errors.New("no input SQL file")
+	// }
+	var f string
 
-	filerc, err := os.Open(filename)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer filerc.Close()
+	if _, err := os.Stat(filename); err == nil {
+		filerc, err := os.Open(filename)
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer filerc.Close()
 
-	buf := new(bytes.Buffer)
-	buf.ReadFrom(filerc)
-	f := buf.String()
+		buf := new(bytes.Buffer)
+		buf.ReadFrom(filerc)
+		f = buf.String()
+	} else {
+		f = filename
+	}
 
 	dsn := "http://" + userName + "@" + prestoHost + ":" + prestoPort
 	db, err := sql.Open("presto", dsn)
@@ -76,7 +81,7 @@ func run(jsonOutput bool, filename string, outFilename string) error {
 	db.Close()
 
 	if err != nil {
-		return errors.New("error running query")
+		return errors.New(err.Error())
 	}
 
 	if outFilename != "" {
