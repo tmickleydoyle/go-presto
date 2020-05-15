@@ -15,12 +15,19 @@ go-presto -in query_one.sql -out query_one.csv -json false
 go-presto -in query_one.sql -out query_one.csv
 
 go-presto -in query_one.sql
+
+go-presto -in "SELECT * FROM table" -out query_one.csv
+
+# Renders markdown table
+go-presto -in "SELECT * FROM table"
 ```
 
-Install with brew:
+Database connection objects should be included in the ~/.bash_profile:
 
 ```bash
-brew install tmickleydoyle/go-presto/main
+export PRESTO_USERNAME='username'
+export PRESTO_HOST='presto.coordinator.net'
+export PRESTO_PORT=8080
 ```
 
 Help:
